@@ -1,0 +1,22 @@
+<div class="modal-header">
+   <div class="row">
+      <div class="col-sm-11">
+         <h3>Quem curtiu?</h3>
+      </div>
+      <div class="col-sm-1">
+         <button class="btn btn-link btn-sm pull-right" ng-click="closeModal()">
+            <i class="fa fa-close"></i>
+         </button>
+      </div>
+   </div>
+</div>
+<div class="modal-body">
+   <div class="feed-activity-list">
+      <div class="feed-element" ng-repeat="like in likes">
+         <a ng-click="enterPerfil(like.usuarios.id)" class="pull-left">
+            <img alt="image" class="img-circle" ng-src="./api/acao.php?acao=getImageProfile&id={{like.usuarios.imagem}}">
+            <strong>&nbsp;{{like.usuarios.nome}}</strong>
+         </a>
+      </div>
+   </div>
+</div>

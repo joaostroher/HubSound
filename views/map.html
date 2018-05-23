@@ -1,0 +1,92 @@
+<div class="wrapper wrapper-content">
+   <div class="row animated fadeInRight">
+      <div class="col-md-12">  
+         <div class="ibox">
+            <div class="ibox-content">
+               <div class="row">
+                  <div class="col-md-12">
+                     <h3>Filtros &nbsp;
+                        <button class="btn-white" ng-click="showFilters = !showFilters">
+                           <i class="fa" ng-class="{'fa-angle-up': showFilters, 'fa-angle-down': !showFilters}"></i>
+                        </button>
+                     </h3>
+                  </div>
+               </div>
+               <form name="editPerfilForm" class="form-horizontal ng-pristine ng-valid" ng-submit="updateUser()" ng-show="showFilters">
+                  <div class="form-group">
+                     <label class="col-sm-2 control-label">Estilos</label>
+                     <div class="col-sm-10">
+                        <select chosen multiple
+                                data-placeholder-text-multiple="'Escolha seus Estilos Musicais'"
+                                options="estilos"
+                                ng-model="filtros.estilos"
+                                ng-options="estilo.id as estilo.descricao for estilo in estilos" 
+                                style="width: 100%"
+                                ng-change="atualizarMapa()">
+                        </select>
+                     </div>
+                  </div>
+                  <div class="form-group">
+                     <label class="col-sm-2 control-label">Influências</label>
+                     <div class="col-sm-10">
+                        <select chosen multiple
+                                data-placeholder-text-multiple="'Escolha suas Influências Musicais'"
+                                options="influencias"
+                                ng-model="filtros.influencias"                                
+                                ng-options="influencia.id as influencia.descricao for influencia in influencias"
+                                style="width: 100%"
+                                ng-change="atualizarMapa()">
+                        </select>
+                     </div>
+                  </div>
+                  <div class="form-group">
+                     <label class="col-sm-2 control-label">Instrumentos</label>
+                     <div class="col-sm-10">
+                        <select chosen multiple
+                                data-placeholder-text-multiple="'Escolha seus Instrumentos Musicais'"
+                                options="instrumentos"
+                                ng-model="filtros.instrumentos"                                
+                                ng-options="instrumento as instrumento.descricao for instrumento in instrumentos"
+                                style="width: 100%"
+                                ng-change="atualizarMapa()">
+                        </select>
+                     </div>
+                  </div>
+                  <div class="form-group" ng-repeat="instrumento in filtros.instrumentos">
+                     <label class="col-sm-2 control-label"><br />{{instrumento.descricao}}</label>               
+                     <div class="col-sm-10 pull-right">
+                        <rzslider rz-slider-model="instrumento.nivelMin"                         
+                                  rz-slider-high="instrumento.nivelMax"
+                                  rz-slider-options="instrumentosSliderOptions">
+                        </rzslider>
+                     </div>
+                  </div>
+               </form>
+               <div class="row">
+                  <div class="col-sm-12">
+                     <button class="btn btn-sm btn-primary pull-right" ng-click="gerarPDF()">Gerar Lista (PDF)</button>                                                
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-sm-12">
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-sm-12">
+                     <button class="btn btn-sm btn-primary pull-right" ng-click="gerarCSV()">Gerar Lista (CSV)</button>                        
+                  </div> 
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <div class="row animated fadeInRight">
+      <div class="col-md-12">         
+         <ui-gmap-google-map center="map.center" zoom="map.zoom" options="map.options">
+            <ui-gmap-markers models="markers" coords="'self'" type="'cluster'" click="clickMarker"
+                             typeOptions="{ imagePath: 'res/img/maps/m'}" options="'options'"></ui-gmap-markers>
+         </ui-gmap-google-map>
+      </div>
+   </div>
+</div>

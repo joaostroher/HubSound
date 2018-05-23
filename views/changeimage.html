@@ -1,0 +1,29 @@
+<div class="modal-header">
+   <div class="row">
+      <div class="col-sm-12">
+         <button class="btn btn-link btn-sm pull-right" ng-click="closeModal()">
+            <i class="fa fa-close"></i>
+         </button>
+      </div>
+   </div>
+</div>
+<div class="modal-body">
+   <div class="row">
+      <div class="col-sm-12">
+         <input class="btn btn-default" type="file" id="fileInput" fileread="myImage" accept="image/gif, image/jpeg, image/png"/>
+      </div>
+   </div>
+   <br />
+   <div class="row">
+      <div class="col-sm-6">
+         <div class="cropArea" ng-show="myImage != ''">
+            <img-crop image="myImage" result-image="myCroppedImage" area-type="square" result-image-size="400"></img-crop>
+         </div>  
+      </div>
+      <div class="col-sm-6 text-center" ng-show="myImage != ''">
+         <div class="text-center"><img ng-src="{{myCroppedImage}}" /></div>
+         <br />
+         <button type="button" class="btn btn-w-m btn-primary" ng-click="atualizarImagem()">Atualizar Imagem</button>
+      </div>
+   </div>
+</div>

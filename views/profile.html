@@ -1,0 +1,163 @@
+<div class="wrapper wrapper-content">
+   <div class="row animated fadeInRight">
+      <div class="col-md-4">
+         <div class="ibox float-e-margins">
+
+            <div>
+               <div class="ibox-content no-padding border-left-right">
+                  <img alt="image" class="img-responsive" src="./api/acao.php?acao=getImageProfile&id={{perfil.imagem}}&w=400&h=400">
+               </div>
+               <div class="ibox-content profile-content">
+                  <h3><strong>{{perfil.nome}}</strong></h3>
+
+                  <p ng-show="perfil.localizacao!=null"><i class="fa fa-map-marker"></i> {{perfil.localizacao}}</p>
+                  <!--<h4>Sobre</h4>
+                  <p>
+                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                     exercitat.
+                  </p>-->
+                  <h4 ng-show="perfil.usuarios_instrumentos.length > 0">Instrumentos</h4>
+                  <div ng-repeat="item in perfil.usuarios_instrumentos">
+                     <h5>{{item.descricao}}</h5>                     
+                     <uib-progressbar value="item.nivel" max="10" style="height: 10px;" ng-show="perfil.email!=null"/>
+                  </div>
+
+                  <div class="row">
+                     <div class="col-sm-6">
+                        <h4 ng-show="perfil.usuarios_estilos.length > 0">Estilos</h4>
+                        <div ng-repeat="item in perfil.usuarios_estilos">
+                           <h5>{{item.estilos.descricao}}</h5>                     
+                        </div>
+                     </div>
+                     <div class="col-sm-6">
+                        <h4 ng-show="perfil.usuarios_influencias.length > 0">Influências</h4>
+                        <div ng-repeat="item in perfil.usuarios_influencias">
+                           <h5>{{item.influencias.descricao}}</h5>                                          
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="user-button" ng-show="editable">
+                     <div class="row">
+                        <div class="col-md-6">
+                           <button type="button" class="btn btn-primary btn-sm btn-block" ui-sref="index.editprofile"><i class="fa fa-edit"></i> Editar Perfil</button>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <div class="col-md-8"> 
+         <!-- Aqui é para um novo post -->
+         <div class="social-feed-box" ng-show="editable">
+            <div class="media-body newPost">
+               <textarea class="form-control" placeholder="O que você deseja compartilhar?" elastic 
+                         ng-model="nPost.texto" style="height: 35px;" ng-change="mudoutexto()">                            
+               </textarea>
+               <div class="pull-left newPost">
+                  <button class="btn btn-link btn-circle btn-outline" ng-show="false">
+                     <i class="fa fa-music"></i>                     
+                  </button>
+                 <!-- <button class="btn btn-link btn-circle btn-outline" ng-click="selectYouTube()">-->
+                 <div style="padding-left: 5px; padding-top: 5px;">
+                    <i class="fa fa-youtube fa-2x" ng-style="nPost.youtube!=''?youtubestyle:{}"></i>                     
+                 </div>
+                     <!--</button>-->
+               </div>               
+               <div class="pull-right newPost">
+                  <button class="btn btn-sm btn-primary" ng-click="novoPost()">Publicar</button>              
+               </div>
+            </div>             
+         </div>       
+
+         <div class="social-feed-box" ng-repeat="post in perfil.posts| orderBy : '-data_hora'">
+            <div class="pull-right social-action" uib-dropdown ng-show="post.canEdit">
+               <button class="btn-white" uib-dropdown-toggle>
+                  <i class="fa fa-angle-down"></i>
+               </button>
+               <ul class="m-t-xs" uib-dropdown-menu>
+                  <li><a ng-click="iniciaEditarPost(post)">Editar</a></li>
+                  <li><a ng-click="removerPost(post)">Excluir</a></li>
+               </ul>
+            </div>
+            <div class="social-avatar">
+               <a href="" class="pull-left">
+                  <img alt="image" class="img-circle" ng-src="./api/acao.php?acao=getImageProfile&id={{post.usuarios.imagem}}">
+               </a>
+               <div class="media-body">
+                  <a ui-sref="index.profile({uid: {{post.usuarios.id}}})">{{post.usuarios.nome}}</a>
+                  <small class="text-muted">{{(post.data_hora| asDate  | date:'medium')}}{{(post.alterado==1?' - Editado':'')}}</small>
+               </div>
+            </div>
+            <div class="social-body">
+               <div ng-show="!post.editando" ng-bind-html="post.texto | newlines"></div>
+               <div ng-show="(!post.editando) && (post.url!=null)" class="embed-responsive embed-responsive-16by9">
+                  <youtube-video class="embed-responsive-item" video-id="post.url"></youtube-video>
+               </div>  
+               <div ng-show="post.editando">
+                  <textarea class="form-control" placeholder="Escreva um post..."
+                            ng-model="post.texto" elastic style="height: 35px;"></textarea>
+                  <div class="pull-right newPost">
+                     <button class="btn btn-sm btn-primary" ng-click="editarPost(post)">Salvar</button>              
+                  </div>
+                  <br>
+               </div>
+               <br />
+               <div>
+                  <button class="btn btn-xs" ng-class="{'btn-white':!post.like,'btn-primary':post.like}" ng-click="changeLike(post)">
+                     <i class="fa fa-thumbs-up"></i> Like
+                  </button>
+                  <button class="btn btn-link btn-xs" ng-click="showPostLikes(post.id)" ng-show="post.likes >= 1">
+                     {{montaTextoLikes(post.like, post.likes);}}                     
+                  </button>
+               </div>              
+            </div>
+            <!-- Comentários -->
+            <div class="social-footer">
+               <div class="social-comment" ng-show="(post.comentarios.length > 3) && (post.limitComentarios)">
+                  <button class="btn btn-link btn-xs" ng-click="post.limitComentarios = false">
+                     Ver mais {{post.comentarios.length - 3}} {{(post.comentarios.length-3>1?'comentários':'comentário')}}
+                  </button>
+               </div>
+               <div class="social-comment" ng-repeat="comentario in post.comentarios| orderBy : 'data_hora' | limitTo : (post.limitComentarios? - 3:null)">
+                  <a ui-sref="index.profile({uid: {{comentario.usuarios.id}}})" class="pull-left">
+                     <img alt="image" class="img-circle" ng-src="./api/acao.php?acao=getImageProfile&id={{comentario.usuarios.imagem}}">
+                  </a>
+                  <div class="media-body">
+                     <a ui-sref="index.profile({uid: {{comentario.usuarios.id}}})">
+                        {{comentario.usuarios.nome}}
+                     </a>
+                     <div class="pull-right" ng-show="comentario.canEdit">
+                        <button class="btn btn-link btn-xs btn-outline" ng-click="iniciaEditarComentario(comentario)">
+                           <i class="fa fa-edit"></i>                     
+                        </button>
+                        <button class="btn btn-link btn-xs btn-outline" ng-click="removerComentario(post, comentario)">
+                           <i class="fa fa-close"></i>                     
+                        </button>                                       
+                     </div>                     
+                     <div ng-show="!comentario.editando">{{comentario.texto}}</div>                     
+                     <textarea class="form-control" placeholder="Escreva um comentário..." ng-show="comentario.editando" 
+                               ng-model="comentario.texto" ng-keydown="onKeyDownTextArea($event, editarComentario, comentario)" 
+                               style="height: 35px;"/>
+                     <small class="text-muted">{{(comentario.data_hora| asDate) | date : 'medium'}}{{(comentario.alterado==1?' - Editado':'')}}</small>
+                  </div>
+               </div>                  
+
+               <div class="social-comment" ng-show="post.novoComentario.edit">
+                  <img alt="image" class="img-circle pull-left" profile-image>
+                  <div class="media-body">
+                     <textarea class="form-control" placeholder="Escreva um comentário..." 
+                               ng-model="post.novoComentario.texto" ng-keydown="onKeyDownTextArea($event, novoComentario, post)"
+                               style="height: 32px;"/>
+                  </div>
+               </div>
+
+            </div>
+
+         </div>
+
+      </div>
+   </div>
+</div>
